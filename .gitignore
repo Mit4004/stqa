@@ -1,0 +1,17 @@
+# Virtual Environment
+venv/
+env/
+
+# Large binaries and archives
+*.zip
+7/apache-jmeter-5.6.3/
+
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Test output artifacts
+9/test-results.xml

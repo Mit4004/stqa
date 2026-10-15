@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                echo 'Checking out code from Git repository...'
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing testing dependencies...'
+                script {
+                    if (isUnix()) {
+                        sh 'pip install -r 9/requirements.txt'
+                    } else {
+                        bat 'pip install -r 9\\requirements.txt'
+                    }
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo 'Running automated Pytest suite...'
+                script {
+                    if (isUnix()) {
+                        sh 'pytest 9/test_calc.py --junitxml=9/test-results.xml -v'
+                    } else {
+                        bat 'pytest 9\\test_calc.py --junitxml=9\\test-results.xml -v'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Publishing test results...'
+            junit allowEmptyResults: true, testResults: '9/test-results.xml'
+        }
+        success {
+            echo 'Continuous Testing Passed! Build is stable.'
+        }
+        failure {
+            echo 'Continuous Testing Failed! Tests failed.'
+        }
+    }
+}
